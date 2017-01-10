@@ -1,0 +1,352 @@
+生成控制器（controller）
+php artisan make:controller PhotoController --resource
+
+安装
+
+Laravel 使用 Composer 管理依赖，因此，使用 Laravel 之前，确保机器上已经安装了Composer。
+
+通过 Laravel 安装器
+
+首先，通过 Composer 安装 Laravel 安装器：
+
+composer global require "laravel/installer"
+确保 ~/.composer/vendor/bin 在系统路径中，否则不能在任意路径调用 laravel 命令。
+
+安装完成后，通过简单的 laravel new 命令即可在当前目录下创建一个新的 Laravel 应用，例如，laravel new blog 将会创建一个名为 blog 的新应用，且包含所有  Laravel 依赖。该安装方法比通过 Composer 安装要快很多：
+
+laravel new blog
+通过 Composer Create-Project
+
+你还可以在终端中通过 Composer 的 create-project 命令来安装 Laravel 应用：
+
+composer create-project --prefer-dist laravel/laravel blog
+注：如果要下载其他版本，比如5.2版本，可以使用这个命令：composer create-project --prefer-dist laravel/laravel blog 5.2.*。
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+数据库 —— 迁移
+
+1、简介
+迁移就像数据库的版本控制，允许团队简单轻松的编辑并共享应用的数据库表结构，迁移通常和Laravel的schema构建器结对从而可以很容易地构建应用的数据库表结构。如果你曾经告知小组成员需要手动添加列到本地数据库结构，那么这正是数据库迁移所致力于解决的问题。
+
+Laravel 的Schema门面提供了与数据库系统无关的创建和操纵表的支持，在 Laravel 所支持的所有数据库系统中提供一致的、优雅的、平滑的API。
+
+2、生成迁移
+使用 Artisan 命令make:migration来创建一个新的迁移：
+
+php artisan make:migration create_users_table
+新的迁移位于database/migrations目录下，每个迁移文件名都包含时间戳从而允许 Laravel 判断其顺序。
+
+--table和--create选项可以用于指定表名以及该迁移是否要创建一个新的数据表。这些选项只需要简单放在上述迁移命令后面并指定表名：
+
+php artisan make:migration create_users_table --create=users
+php artisan make:migration add_votes_to_users_table --table=users
+如果你想要指定生成迁移的自定义输出路径，在执行make:migration命令时可以使用--path选项，提供的路径应该是相对于应用根目录的。
+
+3、迁移结构
+迁移类包含了两个方法：up和down。up方法用于新增表，列或者索引到数据库，而down方法就是up方法的反操作，和up里的操作相反。
+
+在这两个方法中你都要用到 Laravel 的schema构建器来创建和修改表，要了解更多Schema构建器提供的方法，参考其文档。下面让我们先看看创建flights表的简单示例：
+
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateFlightsTable extends Migration{
+    /**
+     * 运行迁移
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('flights', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('airline');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * 撤销迁移
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('flights');
+    }
+}
+4、运行迁移
+要运行应用中所有未执行的迁移，可以使用 Artisan 命令提供的migrate方法：
+
+php artisan migrate
+注：如果你正在使用Homestead虚拟机，需要在虚拟机中运行上面这条命令。
+在生产环境中强制运行迁移
+
+有些迁移操作是毁灭性的，这意味着它们可能造成数据的丢失，为了避免在生产环境数据库中运行这些命令，你将会在运行这些命令之前被提示并确认。想要强制运行这些命令而不被提示，可以使用--force：
+
+php artisan migrate --force
+回滚迁移
+
+想要回滚最新的一次迁移”操作“，可以使用rollback命令，注意这将会回滚最后一批运行的迁移，可能包含多个迁移文件：
+
+php artisan migrate:rollback
+你也可以通过rollback命令上提供的step选项来回滚指定数目的迁移，例如，下面的命令将会回滚最后五条迁移：
+
+php artisan migrate:rollback --step=5
+migrate:reset命令将会回滚所有的应用迁移：
+
+php artisan migrate:reset
+在单个命令中回滚/迁移
+
+migrate:refresh命令将会先回滚所有数据库迁移，然后运行migrate命令。这个命令可以有效的重建整个数据库：
+
+php artisan migrate:refresh
+php artisan migrate:refresh --seed
+当然，你也可以回滚或重建指定数量的迁移，通过refresh命令提供的step选项，例如，下面的命令将会回滚或重建最后五条迁移：
+
+php artisan migrate:refresh --step=5
+5、数据表
+创建表
+
+使用Schema门面上的create方法来创建新的数据表。create方法接收两个参数，第一个是表名，第二个是获取用于定义新表的Blueprint对象的闭包：
+
+Schema::create('users', function ($table) {
+    $table->increments('id');
+});
+当然，创建新表的时候，可以使用schema构建器中的任意列方法来定义数据表的列。
+
+检查表/列是否存在
+
+你可以轻松地使用 hasTable 和 hasColumn 方法检查表或列是否存在：
+
+if (Schema::hasTable('users')) {
+    //
+}
+
+if (Schema::hasColumn('users', 'email')) {
+    //
+}
+连接&存储引擎
+
+如果你想要在一个数据库连接上执行表结构操作，该数据库连接并不是默认数据库连接，使用connection方法：
+
+Schema::connection('foo')->create('users', function ($table) {
+    $table->increments('id');
+});
+要设置表的存储引擎，在schema构建器上设置engine属性：
+
+Schema::create('users', function ($table) {
+    $table->engine = 'InnoDB';
+    $table->increments('id');
+});
+重命名/删除表
+
+要重命名一个已存在的数据表，使用rename方法：
+
+Schema::rename($from, $to);
+要删除一个已存在的数据表，可以使用drop或dropIfExists方法：
+
+Schema::drop('users');
+Schema::dropIfExists('users');
+通过外键重命名表
+
+在重命名表之前，需要验证该表包含的外键在迁移文件中有明确的名字，而不是Laravel基于惯例分配的名字。否则，外键约束名将会指向旧的数据表。
+
+6、列
+创建列
+
+要更新一个已存在的表，使用Schema门面上的table方法，和create方法一样，table方法接收两个参数：表名和获取用于添加列到表的Blueprint实例的闭包：
+
+Schema::table('users', function ($table) {
+    $table->string('email');
+});
+可用的列类型
+
+当然，schema构建器包含一系列你可以用来构建表的列类型：
+
+命令	描述
+$table->bigIncrements('id');	自增ID，类型为bigint
+$table->bigInteger('votes');	等同于数据库中的BIGINT类型
+$table->binary('data');	等同于数据库中的BLOB类型
+$table->boolean('confirmed');	等同于数据库中的BOOLEAN类型
+$table->char('name', 4);	等同于数据库中的CHAR类型
+$table->date('created_at');	等同于数据库中的DATE类型
+$table->dateTime('created_at');	等同于数据库中的DATETIME类型
+$table->dateTimeTz('created_at');	等同于数据库中的DATETIME类型（带时区）
+$table->decimal('amount', 5, 2);	等同于数据库中的DECIMAL类型，带一个精度和范围
+$table->double('column', 15, 8);	等同于数据库中的DOUBLE类型，带精度, 总共15位数字，小数点后8位.
+$table->enum('choices', ['foo', 'bar']);	等同于数据库中的 ENUM类型
+$table->float('amount');	等同于数据库中的 FLOAT 类型
+$table->increments('id');	数据库主键自增ID
+$table->integer('votes');	等同于数据库中的 INTEGER 类型
+$table->ipAddress('visitor');	等同于数据库中的 IP 地址
+$table->json('options');	等同于数据库中的 JSON 类型
+$table->jsonb('options');	等同于数据库中的 JSONB 类型
+$table->longText('description');	等同于数据库中的 LONGTEXT 类型
+$table->macAddress('device');	等同于数据库中的 MAC 地址
+$table->mediumIncrements('id');	自增ID，类型为无符号的mediumint
+$table->mediumInteger('numbers');	等同于数据库中的 MEDIUMINT类型
+$table->mediumText('description');	等同于数据库中的 MEDIUMTEXT类型
+$table->morphs('taggable');	添加一个 INTEGER类型的 taggable_id 列和一个 STRING类型的 taggable_type列
+$table->nullableTimestamps();	和 timestamps()一样但允许 NULL值.
+$table->rememberToken();	添加一个 remember_token 列： VARCHAR(100) NULL.
+$table->smallIncrements('id');	自增ID，类型为无符号的smallint
+$table->smallInteger('votes');	等同于数据库中的 SMALLINT 类型
+$table->softDeletes();	新增一个 deleted_at 列 用于软删除.
+$table->string('email');	等同于数据库中的 VARCHAR 列  .
+$table->string('name', 100);	等同于数据库中的 VARCHAR，带一个长度
+$table->text('description');	等同于数据库中的 TEXT 类型
+$table->time('sunrise');	等同于数据库中的 TIME类型
+$table->timeTz('sunrise');	等同于数据库中的 TIME 类型（带时区）
+$table->tinyInteger('numbers');	等同于数据库中的 TINYINT 类型
+$table->timestamp('added_on');	等同于数据库中的 TIMESTAMP 类型
+$table->timestampTz('added_on');	等同于数据库中的 TIMESTAMP 类型（带时区）
+$table->timestamps();	添加 created_at 和 updated_at列
+$table->timestampsTz();	添加 created_at 和 updated_at列（带时区）
+$table->unsignedBigInteger('votes');	等同于数据库中无符号的 BIGINT 类型
+$table->unsignedInteger('votes');	等同于数据库中无符号的 INT 类型
+$table->unsignedMediumInteger('votes');	等同于数据库中无符号的 MEDIUMINT 类型
+$table->unsignedSmallInteger('votes');	等同于数据库中无符号的 SMALLINT 类型
+$table->unsignedTinyInteger('votes');	等同于数据库中无符号的 TINYINT 类型
+$table->uuid('id');	等同于数据库的UUID
+列修改器
+
+除了上面列出的列类型之外，在添加列的时候还可以使用一些其它列“修改器”，例如，要使列默认为null，可以使用nullable方法：
+
+Schema::table('users', function ($table) {
+    $table->string('email')->nullable();
+});
+下面是所有可用的列修改器列表，该列表不包含索引修改器：
+
+修改器	描述
+->after('column')	将该列置于另一个列之后 (仅适用于MySQL)
+->comment('my comment')	添加注释信息
+->default($value)	指定列的默认值
+->first()	将该列置为表中第一个列 (仅适用于MySQL)
+->nullable()	允许该列的值为NULL
+->storedAs($expression)	创建一个存储生成列（只支持MySQL）
+->unsigned()	设置 integer 列为 UNSIGNED
+->virtualAs($expression)	创建一个虚拟生成列（只支持MySQL）
+修改列
+
+先决条件
+
+在修改列之前，确保已经将doctrine/dbal依赖添加到composer.json文件，Doctrine DBAL 库用于判断列的当前状态并创建对列进行指定调整所需的SQL语句：
+
+composer require doctrine/dbal
+更新列属性
+
+change方法允许你修改已存在的列为新的类型，或者修改列的属性。例如，你可能想要增加 string 类型列的尺寸，让我们将name列的尺寸从 25 增加到 50：
+
+Schema::table('users', function ($table) {
+    $table->string('name', 50)->change();
+});
+我们还可以修改该列允许 NULL 值：
+
+Schema::table('users', function ($table) {
+    $table->string('name', 50)->nullable()->change();
+});
+重命名列
+
+要重命名一个列，可以使用表结构构建器上的renameColumn方法，在重命名一个列之前，确保doctrine/dbal依赖已经添加到composer.json文件：
+
+Schema::table('users', function ($table) {
+    $table->renameColumn('from', 'to');
+});
+注：暂不支持enum类型的列的修改和重命名。
+删除列
+
+要删除一个列，使用schema构建器上的dropColumn方法：
+
+Schema::table('users', function ($table) {
+    $table->dropColumn('votes');
+});
+你可以传递列名数组到dropColumn方法从表中删除多个列：
+
+Schema::table('users', function ($table) {
+    $table->dropColumn(['votes', 'avatar', 'location']);
+});
+注：在从SQLite数据库删除列之前，需要添加doctrine/dbal依赖到composer.json文件并在终端中运行composer update命令来安装该库。此外，SQLite数据库暂不支持在单个迁移中删除或修改多个列。
+7、索引
+创建索引
+
+schema构建器支持多种类型的索引，首先，让我们看一个指定列值为唯一索引的例子。要创建索引，可以使用unique方法：
+
+$table->string('email')->unique();
+此外，你可以在定义列之后创建索引，例如：
+
+$table->unique('email');
+你甚至可以传递列名数组到索引方法来创建组合索引：
+
+$table->index(['account_id', 'created_at']);
+Laravel 会自动生成合理的索引名称，但是你可以传递第二个参数到该方法用于指定索引名称：
+
+$table->index('email', 'my_index_name');
+可用索引类型
+
+命令	描述
+$table->primary('id');	添加主键索引
+$table->primary(['first', 'last']);	添加混合索引
+$table->unique('email');	添加唯一索引
+$table->unique('state', 'my_index_name');	指定自定义索引名称
+$table->index('state');	添加普通索引
+删除索引
+
+要删除索引，必须指定索引名。默认情况下，Laravel 自动分配适当的名称给索引——简单连接表名、列名和索引类型。下面是一些例子：
+
+命令	描述
+$table->dropPrimary('users_id_primary');	从 “users”表中删除主键索引
+$table->dropUnique('users_email_unique');	从 “users”表中删除唯一索引
+$table->dropIndex('geo_state_index');	从 “geo”表中删除普通索引
+如果要传递列数组到删除索引方法，那么相应的索引名称将会通过数据表名、列和关键类型来自动生成：
+
+Schema::table('geo', function ($table) {
+    $table->dropIndex(['state']); // Drops index 'geo_state_index'
+});
+外键约束
+
+Laravel 还提供了创建外键约束的支持，用于在数据库层面强制引用完整性。例如，我们在posts表中定义了一个引用users表的id列的user_id列：
+
+Schema::table('posts', function ($table) {
+    $table->integer('user_id')->unsigned();
+    $table->foreign('user_id')->references('id')->on('users');
+});
+你还可以为约束的“on delete”和“on update”属性指定期望的动作：
+
+$table->foreign('user_id')
+      ->references('id')->on('users')
+      ->onDelete('cascade');
+要删除一个外键，可以使用dropForeign方法。外键约束和索引使用同样的命名规则——连接表名、外键名然后加上“_foreign”后缀：
+
+$table->dropForeign('posts_user_id_foreign');
+或者，你还可以传递在删除时会自动使用基于惯例的约束名数值数组：
+
+$table->dropForeign(['user_id']);
+你可以在迁移时通过以下方法启用或关闭外键约束：
+
+Schema::enableForeignKeyConstraints();
+Schema::disableForeignKeyConstraints();
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+创建控制器
+
+php artisan make:controller PhotoController --resource
+
+路由缓存
+
+注意：路由缓存不会作用于基于闭包的路由。要使用路由缓存，必须将闭包路由转化为控制器路由。
+如果你的应用完全基于控制器路由，可以使用 Laravel 的路由缓存，使用路由缓存将会极大减少注册所有应用路由所花费的时间开销，在某些案例中，路由注册速度甚至能提高100倍！想要生成路由缓存，只需执行 Artisan 命令route:cache:
+
+php artisan route:cache
+运行完成后，每次请求都会从缓存中读取路由，记住，如果你添加新的路由需要重新生成路由缓存。因此，只有在项目部署阶段才需要运行 route:cache 命令。
+
+想要移除缓存路由文件，使用 route:clear 命令即可：
+
+php artisan route:clear
