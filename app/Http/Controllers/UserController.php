@@ -34,7 +34,7 @@ class UserController extends Controller
 
 
         $users = User::where('name','like',"%{$name}%")->get();
-        
+
         return view('user/user',['user'=>$users,'echo'=>$echo]);
     }
 
