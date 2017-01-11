@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Http\Requests;
+
 
 class UserController extends Controller
 {
@@ -17,12 +19,23 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $name = '';
+        $echo = array(
+            'name'=>'',
+            'email'=>''
+        );
+//        $method=$request->method();
+        if($request->isMethod('post')){
+            $name = $request->input('name');
+            $echo['name'] = $name;
+        }
 
-        $users = User::all();
-        dd($users);
+
+        $users = User::where('name','like',"%{$name}%")->get();
+        
+        return view('user/user',['user'=>$users,'echo'=>$echo]);
     }
 
     /**
