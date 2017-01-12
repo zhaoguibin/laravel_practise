@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $name = ''; 
+        $name = '';
         $echo = array(
             'name'=>'',
             'email'=>''
@@ -56,7 +56,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User;
+        $add_name = $request->input('add_name');
+        $add_email = $request->input('add_email');
+        $add_password = $request->input('add_password');
+
+        $user->name = $add_name;
+        $user->email = $add_email;
+        $user->password = bcrypt($add_password);
+        $user->save();
+        return redirect('/user');
     }
 
     /**

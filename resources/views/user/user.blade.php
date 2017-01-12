@@ -1,6 +1,17 @@
 @extends('layouts.app')
         @section('content')
             <table>
+                <tr><td>添加</td></tr>
+                <form action="{{ url('/add') }}" method="post">
+                    {{ csrf_field() }}
+                    <tr>
+                        <td><input type="text" name="add_name">姓名</td>
+                        <td><input type="text" name="add_email">邮箱</td>
+                        <td><input type="password" name="add_password">密码</td>
+                        <td><input type="submit" value="添加"/></td>
+                    </tr>
+                </form>
+                <tr><td>搜索</td></tr>
                 <form action="{{ url('/user') }}" method="post">
                     {{ csrf_field() }}
                     <tr>

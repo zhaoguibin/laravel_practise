@@ -23,4 +23,5 @@ Route::get('/home', 'HomeController@index');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/user', 'UserController@index');
     Route::post('/user', 'UserController@index');
+    Route::post('/add', 'UserController@store');
 });
