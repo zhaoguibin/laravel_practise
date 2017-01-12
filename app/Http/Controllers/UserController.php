@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Http\Requests;
-
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -20,7 +20,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    { 
+    {
         $name = '';
         $echo = array(
             'name'=>'',
@@ -35,7 +35,10 @@ class UserController extends Controller
 
         $users = User::where('name','like',"%{$name}%")->get();
 
-        return view('user/user',['user'=>$users,'echo'=>$echo]);
+        //软删除的数据
+        $del_users = User::onlyTrashed()->get();
+
+        return view('user/user',['user'=>$users,'echo'=>$echo,'del_users'=>$del_users]);
     }
 
     /**
@@ -108,8 +111,37 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    //彻底删除
     public function destroy($id)
     {
-        //
+
+//        User::find("{$id}")->forceDelete();
+//        $post = User::withTrashed()
+//            ->where('id', $id)
+//            ->get();
+//        dd($post);
+//        $post->forceDelete();
+
+
+        DB::delete('delete from users where id = ?',["{$id}"]);
+        return redirect('/user');
     }
+
+    //软删除
+    public function delete($id){
+        User::destroy($id);
+        User::where('id',"{$id}")->delete();
+
+        //彻底删除
+//        $user = User::find($id);
+//        $user->forceDelete();
+        return redirect('/user');
+    }
+
+    //软删除恢复
+    public function restore($id){
+        User::where('id',"{$id}")->restore();
+        return redirect('/user');
+    }
+
 }

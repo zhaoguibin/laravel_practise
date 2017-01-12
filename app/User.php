@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+//软删除
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -26,4 +28,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    use SoftDeletes;
+
+    /**
+     * 软删除
+     * 应该被调整为日期的属性
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 }

@@ -29,8 +29,30 @@
                     <tr>
                         <td class="name">{{$value->name}}</td>
                         <td style="padding-left: 10px">{{$value->email}}</td>
+                        <td style="padding-left: 10px"><a href="/delete/{{$value->id}}">回收站</a></td>
                     </tr>
                 @endforeach
+            </table>
+
+            <table>
+                <tr>
+                    <td>回收站</td>
+                </tr>
+
+                <tr>
+                    <td>姓名</td>
+                    <td style="padding-left: 10px">邮箱</td>
+                </tr>
+                @foreach($del_users as $value)
+                    <tr>
+                        <td class="name">{{$value->name}}</td>
+                        <td style="padding-left: 10px">{{$value->email}}</td>
+                        <td style="padding-left: 10px"><a href="/destroy/{{$value->id}}">彻底删除</a></td>
+                        <td style="padding-left: 10px"><a href="/restore/{{$value->id}}">恢复</a></td>
+                    </tr>
+                @endforeach
+
+
             </table>
             <script>
                 //    $('.search').click(function(){

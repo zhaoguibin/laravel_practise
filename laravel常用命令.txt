@@ -24,19 +24,6 @@ composer create-project --prefer-dist laravel/laravel blog
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-软删除
-在表中添加deleted_at列
-php artisan make:migration alter_posts_deleted_at --table=posts
-
-模型 
-use Illuminate\Database\Eloquent\SoftDeletes;
-    protected $dates = ['delete_at'];
-
-    启用软删除之后 delete destroy就只能软删除，软删除之后用DB:delete可以删除
-    彻底删除 forceDelete
-
-
-
 数据库 —— 迁移
 
 1、简介
