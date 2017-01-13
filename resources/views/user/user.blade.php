@@ -54,6 +54,27 @@
 
 
             </table>
+
+            <table>
+                <form action="{{ url('/upload') }}" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <input type="file" name="image">
+                    <input type="submit" value="upload">
+                </form>
+            </table>
+
+            <table>
+                <tr>
+                    <td>名称</td>
+                    <td>图片</td>
+                </tr>
+                @foreach($file as $img)
+                <tr>
+                    <td>{{$img->name}}</td>
+                    <td><img src="{{$img->path}}"></td>
+                </tr>
+                @endforeach
+            </table>
             <script>
                 //    $('.search').click(function(){
                 //            alert(432131);

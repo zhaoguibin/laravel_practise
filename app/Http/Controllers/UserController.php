@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\File;
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
 
@@ -32,13 +33,14 @@ class UserController extends Controller
             $echo['name'] = $name;
         }
 
+        $file = File::all();
 
         $users = User::where('name','like',"%{$name}%")->get();
 
         //软删除的数据
         $del_users = User::onlyTrashed()->get();
 
-        return view('user/user',['user'=>$users,'echo'=>$echo,'del_users'=>$del_users]);
+        return view('user/user',['user'=>$users,'echo'=>$echo,'del_users'=>$del_users,'file'=>$file]);
     }
 
     /**
@@ -142,6 +144,33 @@ class UserController extends Controller
     public function restore($id){
         User::where('id',"{$id}")->restore();
         return redirect('/user');
+    }
+
+    //fileUpload
+    public function uploadFile(Request $request){
+        if ($request->hasFile('image')) {
+            $file_OriginalName = $request->file('image')->getClientOriginalName();
+            $file_OriginalType = $request->file('image')->getClientOriginalExtension();
+
+           $Original_name = strstr("{$file_OriginalName}", '.', TRUE);
+
+           $file_name = $Original_name.time().'.'.$file_OriginalType;
+
+           echo $Original_name;
+           echo $file_name;
+            $path = $path = $request->image->store('files');
+//            $path = $request->image->storeAs('files', $file_name);
+            //是否上传成功
+            if ($path){
+//                dd($path);
+//                $file_path = public_path('').$path;
+                $file = new File;
+                $file->name = $Original_name;
+                $file->path = $path;
+                $file->save();
+                return redirect('/user');
+            }
+        }
     }
 
 }
