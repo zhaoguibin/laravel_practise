@@ -58,6 +58,7 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
+                                {{--<a href="/user">用户</a>--}}
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <a href="{{ url('/logout') }}"

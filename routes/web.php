@@ -42,6 +42,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/add', 'UserController@store');
     Route::get('/destroy/{id}','UserController@destroy');
     Route::get('/delete/{id}','UserController@delete');
+    Route::get('/del_img/{id}','UserController@deleteImage');
     Route::get('/restore/{id}','UserController@restore');
+    Route::get('/restore_img/{id}','UserController@restore_img');
+    Route::get('/destroy_img/{id}','UserController@destroy_img');
     Route::post('/upload','UserController@uploadFile');
 });

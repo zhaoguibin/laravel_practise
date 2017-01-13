@@ -72,6 +72,25 @@
                 <tr>
                     <td>{{$img->name}}</td>
                     <td><img src="{{$img->path}}"></td>
+                    <td><a href="/del_img/{{$img->id}}">回收站</a></td>
+                </tr>
+                @endforeach
+            </table>
+
+            <table>
+                <tr>
+                    <td>图片回收站</td>
+                </tr>
+                <tr>
+                    <td>名称</td>
+                    <td>图片</td>
+                </tr>
+                @foreach($del_img as $img)
+                <tr>
+                    <td>{{$img->name}}</td>
+                    <td><img src="{{$img->path}}"></td>
+                    <td><a href="/destroy_img/{{$img->id}}">彻底删除</a></td>
+                    <td style="padding-left: 10px"><a href="/restore_img/{{$img->id}}">恢复</a></td>
                 </tr>
                 @endforeach
             </table>

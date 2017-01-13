@@ -40,7 +40,10 @@ class UserController extends Controller
         //软删除的数据
         $del_users = User::onlyTrashed()->get();
 
-        return view('user/user',['user'=>$users,'echo'=>$echo,'del_users'=>$del_users,'file'=>$file]);
+        //图片软删除的数据
+        $del_img = File::onlyTrashed()->get();
+
+        return view('user/user',['user'=>$users,'echo'=>$echo,'del_users'=>$del_users,'file'=>$file,'del_img'=>$del_img]);
     }
 
     /**
@@ -123,10 +126,25 @@ class UserController extends Controller
 //            ->get();
 //        dd($post);
 //        $post->forceDelete();
-
-
         DB::delete('delete from users where id = ?',["{$id}"]);
         return redirect('/user');
+    }
+
+    //图片彻底删除
+    public function destroy_img($id)
+    {
+//        User::find("{$id}")->forceDelete();
+//        $post = User::withTrashed()
+//            ->where('id', $id)
+//            ->get();
+//        dd($post);
+//        $post->forceDelete();
+        $file = File::onlyTrashed('id',"{$id}")->first();
+        if(unlink($file->path)){
+            DB::delete('delete from files where id = ?',["{$id}"]);
+            return redirect('/user');
+        }
+
     }
 
     //软删除
@@ -146,6 +164,12 @@ class UserController extends Controller
         return redirect('/user');
     }
 
+    //图片软删除恢复
+    public function restore_img($id){
+        File::where('id',"{$id}")->restore();
+        return redirect('/user');
+    }
+
     //fileUpload
     public function uploadFile(Request $request){
         if ($request->hasFile('image')) {
@@ -158,7 +182,7 @@ class UserController extends Controller
 
            echo $Original_name;
            echo $file_name;
-            $path = $path = $request->image->store('files');
+            $path = $request->image->store('files', 'public');
 //            $path = $request->image->storeAs('files', $file_name);
             //是否上传成功
             if ($path){
@@ -171,6 +195,17 @@ class UserController extends Controller
                 return redirect('/user');
             }
         }
+    }
+
+    //图片回收
+    public function deleteImage($id){
+        File::destroy($id);
+        File::where('id',"{$id}")->delete();
+
+        //彻底删除
+//        $user = User::find($id);
+//        $user->forceDelete();
+        return redirect('/user');
     }
 
 }
