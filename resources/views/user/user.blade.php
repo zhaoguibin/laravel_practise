@@ -73,6 +73,7 @@
                     <td>{{$img->name}}</td>
                     <td><img src="{{$img->path}}"></td>
                     <td><a href="/del_img/{{$img->id}}">回收站</a></td>
+                    <td><a href="/download/{{$img->id}}">下载</a></td>
                 </tr>
                 @endforeach
             </table>

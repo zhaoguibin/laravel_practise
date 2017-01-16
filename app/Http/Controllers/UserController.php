@@ -37,6 +37,13 @@ class UserController extends Controller
 
         $users = User::where('name','like',"%{$name}%")->get();
 
+        //返回json数据
+//        return response()->json($users);
+
+//        return response()->json(['name' => 'Abigail', 'state' => 'CA'])
+//            ->setCallback($request->input('callback'));
+
+
         //软删除的数据
         $del_users = User::onlyTrashed()->get();
 
@@ -176,14 +183,13 @@ class UserController extends Controller
             $file_OriginalName = $request->file('image')->getClientOriginalName();
             $file_OriginalType = $request->file('image')->getClientOriginalExtension();
 
+
            $Original_name = strstr("{$file_OriginalName}", '.', TRUE);
 
-           $file_name = $Original_name.time().'.'.$file_OriginalType;
-
-           echo $Original_name;
-           echo $file_name;
-            $path = $request->image->store('files', 'public');
+//            $path = $request->image->store('files', 'public');
 //            $path = $request->image->storeAs('files', $file_name);
+            //不自动生成文件名，可以使用 storeAs 方法，该方法接收保存路径、文件名和磁盘名作为参数：
+            $path = $request->image->storeAs('files', $file_OriginalName, 'public');
             //是否上传成功
             if ($path){
 //                dd($path);
@@ -191,6 +197,7 @@ class UserController extends Controller
                 $file = new File;
                 $file->name = $Original_name;
                 $file->path = $path;
+                $file->suffix = $file_OriginalType;
                 $file->save();
                 return redirect('/user');
             }
@@ -206,6 +213,15 @@ class UserController extends Controller
 //        $user = User::find($id);
 //        $user->forceDelete();
         return redirect('/user');
+    }
+
+    //下载文件
+    public function downloadFile($id){
+        $file_info = File::where('id',"{$id}")->first();
+//        dd($file_info);
+/*        print($file_info['name']);
+        exit;*/
+        return response()->download($file_info['path']);
     }
 
 }

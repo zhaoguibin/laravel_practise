@@ -46,5 +46,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/restore/{id}','UserController@restore');
     Route::get('/restore_img/{id}','UserController@restore_img');
     Route::get('/destroy_img/{id}','UserController@destroy_img');
+    Route::get('/download/{id}','UserController@downloadFile');
     Route::post('/upload','UserController@uploadFile');
 });
