@@ -1,0 +1,31 @@
+//Connecting to Redis server on localhost
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+$redis->auth('123456');
+//echo "Connection to server sucessfully";
+////check whether server is running or not
+//echo "Server is running: " . $redis->ping();
+//$string = $redis->get("string");
+//echo $string;
+//$list = $redis->lRange("list",0,20);
+//print_r($list);
+//
+//$zlist = $redis->zRange("oset",0,20);
+//print_r($zlist);
+//
+//$redis->hMset('user',array('username'=>'555','sex'=>'man','age'=>24,'points'=>345));
+//
+//$hash = $redis->hGetAll("user:1");
+//var_dump($hash);
+$con=mysqli_connect("127.0.0.1:3306", "root", "123456","laravel_test")or         die("cannot connect server ");
+
+$sql="select * from migrations";
+$result=mysqli_query($con,$sql);
+
+//var_dump($result);
+
+foreach ($result as $key=>$value){
+    echo $value['migration'];
+}
+
+mysqli_close($con);
