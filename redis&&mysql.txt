@@ -28,4 +28,7 @@ foreach ($result as $key=>$value){
     echo $value['migration'];
 }
 
+//在我们执行完SELECT语句后，释放游标内存是一个很好的习惯。 。可以通过PHP函数mysql_free_result()来实现内存的释放。
+mysql_free_result($result);
+
 mysqli_close($con);
