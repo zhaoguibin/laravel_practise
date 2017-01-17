@@ -400,3 +400,21 @@ php artisan route:cache
 想要移除缓存路由文件，使用 route:clear 命令即可：
 
 php artisan route:clear
+
+
+
+项目安装步骤
+1.composer install
+2.php artisan migrate
+3.php artisan serve
+
+
+
+============================================================================================================================================
+问题
+1.The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths.
+处理：
+PHP artisan key:generate 
+
+2.还有就是出现：`[ReflectionException] Class ***TableSeeder does not exist`
+在控制台中执行`composer dump-autoload`,然后再执行`php artisan db:seed`.
