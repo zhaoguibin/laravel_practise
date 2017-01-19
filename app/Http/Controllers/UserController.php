@@ -7,6 +7,7 @@ use App\User;
 use App\File;
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -22,6 +23,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+      echo   $ptoken = Str::random(20);
         $name = '';
         $echo = array(
             'name'=>'',
