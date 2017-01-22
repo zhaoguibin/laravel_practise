@@ -49,3 +49,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/download/{id}','UserController@downloadFile');
     Route::post('/upload','UserController@uploadFile');
 });
+
+Route::get('/getcode','UserController@getCode');
+Route::get('/curltest','UserController@curlTest');

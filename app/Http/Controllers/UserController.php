@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Auth;
 use App\User;
 use App\File;
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use UUID;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
@@ -23,7 +26,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-      echo   $ptoken = Str::random(20);
+        echo $token = UUID::generate();
         $name = '';
         $echo = array(
             'name'=>'',
@@ -225,5 +228,48 @@ class UserController extends Controller
         exit;*/
         return response()->download($file_info['path']);
     }
+
+    public function getCode(){
+        $ptoken = Str::random(20);
+        $redis = Redis::get('string');
+//        $token = UUID::generate(1,"fe80::c4d6:efb2:d535:a760%2");
+        $token = UUID::generate();
+
+        $pattern = array(
+            "/[[:punct:]]/i", //英文标点符号
+            '/[ ]{2,}/'
+        );
+        $token = preg_replace($pattern, '', $token);
+
+         $array =  array(
+            'ptoken'=>$ptoken,
+            'redis'=>$redis,
+            'token'=>$token
+        );
+
+         return json_encode($array);
+    }
+
+    public function curlTest(){
+        // 1. 初始化
+        $ch = curl_init();
+        // 2. 设置选项，包括URL
+        curl_setopt($ch,CURLOPT_URL,"http://192.168.10.17:8181/getcode");
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_HEADER,0);
+        // 3. 执行并获取HTML文档内容
+        $output = curl_exec($ch);
+//        $info = curl_getinfo($ch);
+//        echo ' 获取 '.$info['url'].'耗时'.$info['total_time'].'秒';
+        if($output === FALSE ){
+            echo "CURL Error:".curl_error($ch);
+        }
+
+        echo $output;
+        // 4. 释放curl句柄
+        curl_close($ch);
+    }
+
+
 
 }

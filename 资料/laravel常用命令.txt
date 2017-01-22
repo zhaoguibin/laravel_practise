@@ -1,3 +1,28 @@
+使用UUID（webpatser/laravel-uuid 是简化了 Laravel 应用生成通用唯一识别码的扩展包。）
+1. 安装##
+1). 使用 composer 安装:
+composer require webpatser/laravel-uuid
+
+2). 修改 config/app 文件，在 aliases 数组内追加如下内容：
+'aliases' => [
+  ...
+  'UUID' => Webpatser\Uuid\Uuid::class,
+],
+
+使用#
+
+基础使用
+UUID::generate()
+此方式将基于一个随机的 MAC Address 生成 UUID,如果你想通过设置 MAC Address 方式来生成 UUID，可以通过如下代码实现
+
+UUID::generate(1,'00:11:22:33:44:55')
+======================================================================================================================================>100%
+使用redis：
+1.composer require predis/predis
+2.config/cache.php 修改redis配置
+3.修改.envredis配置
+ok
+======================================================================================================================================>100%
 生成控制器（controller）
 php artisan make:controller PhotoController --resource
 
