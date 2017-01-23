@@ -32,3 +32,62 @@ foreach ($result as $key=>$value){
 mysql_free_result($result);
 
 mysqli_close($con);
+
+redis安装
+Window 下安装
+下载地址：https://github.com/MSOpenTech/redis/releases。
+Redis 支持 32 位和 64 位。这个需要根据你系统平台的实际情况选择，这里我们下载 Redis-x64-xxx.zip压缩包到 C 盘，解压后，将文件夹重新命名为 redis。
+
+打开一个 cmd 窗口 使用cd命令切换目录到 C:\redis 运行 redis-server.exe redis.windows.conf 。
+如果想方便的话，可以把 redis 的路径加到系统的环境变量里，这样就省得再输路径了，后面的那个 redis.windows.conf 可以省略，如果省略，会启用默认的。输入之后，会显示如下界面：
+
+
+
+
+这时候另启一个cmd窗口，原来的不要关闭，不然就无法访问服务端了。
+切换到redis目录下运行 redis-cli.exe -h 127.0.0.1 -p 6379 。
+设置键值对 set myKey abc
+取出键值对 get myKey
+
+
+ 关于redis注册为windows服务
+
+ 关于Redis注册为windows服务 
+1.通过情况下我们可以通过 redisl-server.exe 和配置文件启动redis服务 
+redis-server.exe redsi.conf 
+测试的时候用 
+另外开启一个命令行窗口 redis-cli.exe 即可做一些简单的操作命令行 
+当然也可以使用redisManger 可视化工具，（目前有个情况，我在服务器里面是ser08r2里面，打开的可视化工具显示界面是黑色的，我也不知道是不是人品问题。。） 
+但是如果关闭了打开redis-server.exe命令窗口的时候可以，那么就关闭了redis服务了。 
+注册为windows服务 
+如下
+
+注册服务
+
+Redis-server.exe -–service-install redis.windows.conf
+
+删除服务
+redis-server -–service-uninstall
+
+开启服务
+redis-server -–service-start
+
+停止服务
+redis-server –service-stop
+还可以安装多个实例
+
+redis-server --service-install –service-name redisService1 –port 10001
+redis-server --service-start –service-name redisService1
+redis-server --service-install –service-name redisService2 –port 10002
+redis-server --service-start –service-name redisService2
+redis-server --service-install –service-name redisService3 –port 10003
+redis-server --service-start –service-name redisService3
+
+
+auth
+redis 127.0.0.1:6379> AUTH PASSWORD
+(error) ERR Client sent AUTH, but no password is set
+redis 127.0.0.1:6379> CONFIG SET requirepass "mypass"
+OK
+redis 127.0.0.1:6379> AUTH mypass
+Ok
