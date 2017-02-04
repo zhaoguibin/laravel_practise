@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use UUID;
 use Illuminate\Support\Facades\Redis;
+use Mail;
 
 class UserController extends Controller
 {
@@ -274,6 +275,8 @@ class UserController extends Controller
         $method = $request->method();
 //        if ($request->isMethod('post')) {
             //
+
+
 
         $add_name = $request->input('add_name');
         $request->flashOnly(['add_name']);

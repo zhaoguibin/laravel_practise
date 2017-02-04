@@ -443,3 +443,7 @@ PHP artisan key:generate
 
 2.还有就是出现：`[ReflectionException] Class ***TableSeeder does not exist`
 在控制台中执行`composer dump-autoload`,然后再执行`php artisan db:seed`.
+
+============================================================================================================================================
+QQ邮箱授权码
+wyjahhcgvzhcbfgh
