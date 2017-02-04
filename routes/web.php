@@ -52,3 +52,4 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::get('/getcode','UserController@getCode');
 Route::get('/curltest','UserController@curlTest');
+Route::post('/without_csrf','UserController@without_csrf');

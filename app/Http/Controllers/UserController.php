@@ -270,6 +270,21 @@ class UserController extends Controller
         curl_close($ch);
     }
 
+    public function without_csrf(Request $request){
+        $method = $request->method();
+//        if ($request->isMethod('post')) {
+            //
+
+        $add_name = $request->input('add_name');
+        $request->flashOnly(['add_name']);
+        $old_add_name = $request->old('add_name');
+            echo $old_add_name;
+            echo "\n";
+            return $add_name;
+//        }
+
+    }
+
 
 
 }
