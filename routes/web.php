@@ -48,6 +48,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/destroy_img/{id}','UserController@destroy_img');
     Route::get('/download/{id}','UserController@downloadFile');
     Route::post('/upload','UserController@uploadFile');
+    //emails
+    Route::get('/email','EmailsController@index');
 });
 
 Route::get('/getcode','UserController@getCode');

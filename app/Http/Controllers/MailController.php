@@ -12,15 +12,16 @@ class MailController{
     {
         //模板
         $name = 'FFF';
-//        $flag = Mail::send('emails.test',['name'=>$name],function($message){
-//            $to = 'zhaoguibinx@163.com';
-//            $message ->to($to)->subject('邮件测试');
-//        });
-//        if($flag){
-//            echo '发送邮件成功，请查收！';
-//        }else{
-//            echo '发送邮件失败，请重试！';
-//        }
+        $flag = Mail::send('emails.test',['name'=>$name],function($message){
+            $to = 'zhaoguibinx@163.com';
+            $message ->to($to)->subject('邮件测试');
+        });
+
+        if($flag){
+            echo '发送邮件成功，请查收！';
+        }else{
+            echo '发送邮件失败，请重试！';
+        }
 
         //纯文本邮件
 //        Mail::raw('你好，我是PHP程序！', function ($message) {
@@ -41,15 +42,25 @@ class MailController{
 //            echo '发送邮件失败，请重试！';
 //        }
         //本地图片
-        $image = Storage::get('images/obalu.png');
-        $flag = Mail::send('emails.test',['image'=>$image],function($message){
-            $to = 'zhaoguibinx@163.com';
-            $message->to($to)->subject('[本地图片测试]');
-        });
-        if($flag){
-            echo '发送邮件成功，请查收！';
-        }else{
-            echo '发送邮件失败，请重试！';
-        }
+//        $image = Storage::get('images/obalu.png');
+//        $flag = Mail::send('emails.test',['name'=>$name,'imgPath'=>$image],function($message){
+//            $to = 'zhaoguibinx@163.com';
+//            $message ->to($to)->subject('网络图片测试');
+//        });
+//        if($flag){
+//            echo '发送邮件成功，请查收！';
+//        }else{
+//            echo '发送邮件失败，请重试！';
+//        }
+        //附件
+//        $flag = Mail::send('emails.test',['name'=>$name],function($message){
+//            $to = 'zhaoguibinx@163.com';
+//            $message->to($to)->subject('邮件主题');
+//            $attachment = public_path('images/obalu.png');
+//            // 在邮件中上传附件
+//            $message->attach($attachment,['as'=>'中文文档.png']);
+//        });
+//
+//        echo $flag;
     }
 }
