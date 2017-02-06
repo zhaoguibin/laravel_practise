@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Auth;
 use App\User;
+use App\Emails;
 use App\File;
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,8 @@ class EmailsController extends Controller
     public function index()
     {
         //
-        return view('emails/index');
+        $emails = Emails::paginate(5);
+        return view('emails/index',['emails'=>$emails]);
 
     }
 

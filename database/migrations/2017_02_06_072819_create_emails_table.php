@@ -18,8 +18,8 @@ class CreateEmailsTable extends Migration
             $table->string('title');
             $table->string('email_to');
             $table->string('content');
-            $table->string('file_path');
-            $table->string('file_type');
+            $table->string('file_path')->nullable();
+            $table->string('file_type')->nullable();
             $table->timestamps();
         });
     }
