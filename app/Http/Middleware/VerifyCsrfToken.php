@@ -13,6 +13,7 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         //
-        'without_csrf'
+        'without_csrf',
+        'middleware'
     ];
 }

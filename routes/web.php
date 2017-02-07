@@ -56,3 +56,12 @@ Route::get('/getcode','UserController@getCode');
 Route::get('/curltest','UserController@curlTest');
 Route::post('/without_csrf','UserController@without_csrf');
 Route::get('/mail/send','MailController@send');
+
+//中间件测试
+
+Route::group(['middleware'=>['middleware_test']],function(){
+    Route::get('/middleware','MiddlewareTestController@index');
+});
+
+Route::post('/middleware','MiddlewareTestController@index');
+
