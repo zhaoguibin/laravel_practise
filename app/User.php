@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 //软删除
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -38,4 +39,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    public function getEmail(){
+        $users = DB::table('emails')
+            ->leftJoin('users', 'users.id', '=', 'emails.user_id')
+            ->select('users.*', 'emails.content', 'emails.title')
+            ->get();
+        return $users;
+    }
 }

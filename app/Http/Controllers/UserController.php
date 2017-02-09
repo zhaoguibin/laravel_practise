@@ -288,6 +288,37 @@ class UserController extends Controller
 
     }
 
+    //ajax提交测试
+    public function ajax(Request $request)
+    {
+
+//        dd(11);
+        $user = new User;
+
+//        $method = $request->method();
+        if($request->isMethod('post')){
+            $date = $request->input('date');
+            if($date){
+                $user = new User;
+                $emails =  $user->getEmail();
+                return response()->json(
+
+                    array(
+                        'status'=>1,
+                        'emails'=>$emails
+                    )
+                );
+            }else{
+                return Redirect::back()->withInput()->withErrors('error');
+            }
+        }
+
+//        return redirect('/user/ajax');
+        return view('user/ajax');
+
+    }
+
+
 
 
 }

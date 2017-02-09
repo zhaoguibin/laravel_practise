@@ -39,6 +39,8 @@ Route::get('/png', function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/user', 'UserController@index');
     Route::post('/user', 'UserController@index');
+    Route::get('/ajax', 'UserController@ajax');
+    Route::post('/ajax', 'UserController@ajax');
     Route::post('/add', 'UserController@store');
     Route::get('/destroy/{id}','UserController@destroy');
     Route::get('/delete/{id}','UserController@delete');
