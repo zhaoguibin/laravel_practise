@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+    <input type="text" id="user_ids" name="user_id">
     <input type="button" id="button" name="434343" value="button">
     <script>
         $(function(){
@@ -8,7 +9,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/ajax',
-                    data: { date : '2015-03-12'},
+                    data: { date : '2015-03-12',user_id:1},
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -25,9 +26,9 @@
 //                        html += "</table>";
 //                        $("body").append(html);
                     },
-                    error: function(xhr, type){
-                        alert('Ajax error!')
-                    }
+//                    error: function(xhr, type){
+//                        alert('Ajax error!')
+//                    }
                 });
             })
         })

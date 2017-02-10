@@ -12,6 +12,15 @@ use Illuminate\Support\Str;
 use UUID;
 use Illuminate\Support\Facades\Redis;
 use Mail;
+//事件
+use App\Events\OrderShipped;
+//通知
+use App\Notifications\InvoicePaid;
+//队列
+use App\Jobs\SendReminderEmail;
+//队列延迟分发
+use Carbon\Carbon;
+
 
 class UserController extends Controller
 {
@@ -292,15 +301,32 @@ class UserController extends Controller
     public function ajax(Request $request)
     {
 
-//        dd(11);
-        $user = new User;
-
 //        $method = $request->method();
         if($request->isMethod('post')){
             $date = $request->input('date');
+            $user_id = $request->input('user_id');
             if($date){
                 $user = new User;
-                $emails =  $user->getEmail();
+                $emails =  $user->getEmail($user_id);
+
+//              事件
+//                event(new OrderShipped($emails));
+                //通知
+//                $user->notify(new InvoicePaid($emails));
+                //队列
+//                dispatch(new SendReminderEmail($emails));
+//                Redis::set(time(),time());
+                //延迟 分钟
+                $job = (new SendReminderEmail('key_'.str_random(4), str_random(10)))
+                    ->delay(Carbon::now()->addMinutes(1));
+
+                $queueId = $this->dispatch($job);
+//                $queueId = $this->dispatch((new SendReminderEmail('key_'.str_random(4), str_random(10)))
+//                    ->delay(Carbon::now()->addMinutes(5)
+//                ));
+                dd($queueId);
+
+                exit;
                 return response()->json(
 
                     array(

@@ -447,3 +447,96 @@ PHP artisan key:generate
 ============================================================================================================================================
 QQ邮箱授权码
 wyjahhcgvzhcbfgh
+
+//队列
+队列常常用于两种场景，一种是高并发的情况，一种是耗时的操作，可以将任务放到队列中去，消费者从队列取任务执行，当然还有失败的情况如何处理，以及延迟，重试，更复杂的情况还有优先级的实现。
+在Laravel 5中使用队列非常简单，并且失败处理，延迟，重试的方法都已经实现，下面简单尝试了一下Laravel的队列服务。
+Laravel默认支持以下几种队列服务：sync, database, beanstalkd, sqs, redis，本例使用redis作为队列服务，需先配置好Redis服务。
+1.队列服务配置
+在配置文件queue.php的connections中已经默认定义了redis的连接：
+'redis' => [
+ 'driver'  => 'redis',
+ 'connection' => 'default',
+ 'queue'  => 'default',
+ 'expire'  => 60,
+],
+在.env环境配置文件中把默认的队列驱动改成redis：
+QUEUE_DRIVER=redis
+为了避免配置缓存的影响，执行以下命令清除并重建配置缓存：
+php artisan config:cache
+2.新建Queueable Jobs
+使用命令：
+php artisan make:job MyJob
+新建一个名为MyJob的队列处理类，在App/Jobs目录下自动生成一个MyJob.php文件。
+
+MyJob.php需要实现handle方法，用来具体执行队列任务，构造函数可以用来传递需要的参数，handle方法支持依赖注入。
+这里handle方法随便写了一个，就是往一个list类型数据结构中存一个key-value数据，测试消费队列的时候有没有起作用，构造函数传两个参数就是key和value.
+<?php
+
+namespace App\Jobs;
+
+use App\Jobs\Job;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Redis;
+
+class MyJob extends Job implements ShouldQueue
+{
+ use InteractsWithQueue, SerializesModels;
+
+ private $key;
+ private $value;
+
+ /**
+  * Create a new job instance.
+  *
+  * @return void
+  */
+ public function __construct($key, $value)
+ {
+  $this->key = $key;
+  $this->value = $value;
+ }
+
+ /**
+  * Execute the job.
+  *
+  * @return void
+  */
+ public function handle()
+ {
+  Redis::hset('queue.test', $this->key, $this->value);
+ }
+
+ public function failed()
+ {
+  dump('failed');
+ }
+}
+在控制器中使用dispatch方法调用队列，将任务放入队列中，控制器中写个方法如public function test()，new MyJob的构造函数传两个随机生成的字符串参数：
+$queueId = $this->dispatch(new MyJob('key_'.str_random(4), str_random(10)));
+dd($queueId);
+配置并访问路由，可以多访问几次，然后到Redis中查看，会发现把队列存入了一个queue::queue:default的List结构中：
+
+其中value内容如下，这是转换成json格式的，而实际上是经过序列号的字符串：
+{
+ "job": "Illuminate\\Queue\\CallQueuedHandler@call",
+ "data": {
+  "command": "O:14:\"App\\Jobs\\MyJob\":6:{s:19:\"\u0000App\\Jobs\\MyJob\u0000key\";i:1;s:21:\"\u0000App\\Jobs\\MyJob\u0000value\";i:2;s:10:\"connection\";N;s:5:\"queue\";N;s:5:\"delay\";N;s:6:\"\u0000*\u0000job\";N;}"
+ },
+ "id": "EV2bhqUlx0T8pRCVHw1qT0fkP8AQcyI8",
+ "attempts": 1
+}
+这里data参数里包含了队列服务Job的名称，构造函数的参数等信息，消费者执行任务的依据。attempts表示重试的次数，往往执行队列任务失败了会重试，可以设置最多尝试次数。
+3.消费队列
+这个时候任务只是入了队列，但并没有消费，执行：
+phpartisan queue:work
+php artisan queue:listen
+这个命令，Laravel就开始消费队列。
+
+可以看到这几个任务以此被消费，再去Redis看看有没有实现预期要达到的效果，每个任务往一个List类型的结构写入数据。
+
+这证明队列任务消费成功。
+总结
+本文的内容到这就结束了，当然，还有更多Laravel队列的用法，可以请大家继续参考官方手册。希望本文的内容对大家学习Laravel有所帮助。

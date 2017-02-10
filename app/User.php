@@ -40,11 +40,12 @@ class User extends Authenticatable
      */
     protected $dates = ['deleted_at'];
 
-    public function getEmail(){
+    public function getEmail($user_id){
         $users = DB::table('emails')
             ->leftJoin('users', 'users.id', '=', 'emails.user_id')
             ->select('users.*', 'emails.content', 'emails.title')
+            ->where("users.id",'=',"$user_id")
             ->get();
-        return $users;
+        return $users->toArray();
     }
 }
