@@ -4,11 +4,12 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Queue\InteractsWithQueue;
+//加入队列
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Mail;
 
 
-class SendShipmentNotification
+class SendShipmentNotification implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -34,8 +35,7 @@ class SendShipmentNotification
 
         $ccc = $aa[0]->name;
 
-        //模板
-        $name = 'FFF'.$ccc;
+        $name = 'FFF';
         $flag = Mail::send('emails.test',['name'=>$name],function($message){
             $to = 'zhaoguibinx@163.com';
             $message ->to($to)->subject('邮件测试');

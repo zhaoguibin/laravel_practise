@@ -447,7 +447,7 @@ PHP artisan key:generate
 ============================================================================================================================================
 QQ邮箱授权码
 wyjahhcgvzhcbfgh
-
+===========================================================================================================================================
 //队列
 队列常常用于两种场景，一种是高并发的情况，一种是耗时的操作，可以将任务放到队列中去，消费者从队列取任务执行，当然还有失败的情况如何处理，以及延迟，重试，更复杂的情况还有优先级的实现。
 在Laravel 5中使用队列非常简单，并且失败处理，延迟，重试的方法都已经实现，下面简单尝试了一下Laravel的队列服务。
@@ -540,3 +540,143 @@ php artisan queue:listen
 这证明队列任务消费成功。
 总结
 本文的内容到这就结束了，当然，还有更多Laravel队列的用法，可以请大家继续参考官方手册。希望本文的内容对大家学习Laravel有所帮助。
+
+
+
+===========================================================================================================================================
+//事件
+1.注册事件和监听器
+包含在你 Laravel 应用中的 EventServiceProvider 提供了一个很方便的地方来注册所有的事件监听器。listen 属性是一个数组，它包含了所有事件（键）以及事件对应的监听器（值）。你也可以根据应用需求来增加事件到这个数组，例如，我们增加一个 OrderShipped 事件：
+
+/**
+ * 应用程序的事件监听器映射。
+ *
+ * @var array
+ */
+protected $listen = [
+    'App\Events\OrderShipped' => [
+        'App\Listeners\SendShipmentNotification',
+    ],
+];
+
+2.生成事件和监听器
+手动创建事件和监听器是很麻烦的，简单的方式是，在 EventServiceProvider 中写上事件和监听器然后使用 event:generate 命令。这个命令会自动生成在 EventServiceProvider 中列出的所有事件和监听器，当然已经存在的事件和监听器将保持不变：
+
+php artisan event:generate
+
+3.定义事件
+一个事件类是包含了相关事件信息的数据容器。例如，假设我们生成的 OrderShipped 事件接收一个 Eloquent ORM 对象：
+
+<?php
+
+namespace App\Events;
+
+use App\Order;
+use App\Events\Event;
+use Illuminate\Queue\SerializesModels;
+
+class OrderShipped extends Event
+{
+    use SerializesModels;
+
+    public $order;
+
+    /**
+     * 创建一个事件实例
+     *
+     * @param  Order  $order
+     * @return void
+     */
+    public function __construct(Order $order)
+    {
+        $this->order = $order;
+    }
+}
+正如你所见的，这个事件类没有包含其它逻辑。它只是一个被购买的 Order 对象的容器。如果事件对象是使用 PHP 的 serialized 函数进行序列化，那么事件所使用的 SerializesModels trait 将会优雅的序列化任何的 Eloquent 模型。
+
+4.定义监听器
+接下来，让我们看一下例子中事件的监听器。事件监听器的 handle 方法接收了事件实例。event:generate 命令将会在事件的 handle 方法中自动加载正确的事件类和类型提示。在 handle 方法内，你可以运行任何需要响应该事件的业务逻辑。
+
+<?php
+
+namespace App\Listeners;
+
+use App\Events\OrderShipped;
+
+class SendShipmentNotification
+{
+    /**
+     * 创建事件监听器。
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * 处理事件。
+     *
+     * @param  OrderShipped  $event
+     * @return void
+     */
+    public function handle(OrderShipped $event)
+    {
+        // 使用 $event->order 来访问 order ...
+    }
+}
+
+你的事件监听器也可以在构造器内对任何依赖使用类型提示。所有事件监听器经由 Laravel 服务容器 做解析，所以依赖将会被自动注入：
+
+5.触发事件
+如果要触发一个事件，你可以发送一个事件的实例到 event 辅助函数。这个函数将会把事件分发到它所有已经注册的监听器上。因为 event 函数是全局可访问的，所以你可以在应用中任何地方调用：
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Order;
+use App\Events\OrderShipped;
+use App\Http\Controllers\Controller;
+
+class OrderController extends Controller
+{
+    /**
+     * 将传递过来的订单发货
+     *
+     * @param  int  $orderId
+     * @return Response
+     */
+    public function ship($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+
+        // 订单的发货逻辑...
+
+        event(new OrderShipped($order));
+    }
+}
+
+
+停止事件传播
+有时候，你可能希望停止一个事件传播到其它的监听器。你可以通过在侦听器的 handle 方法中返回 false 来实现。
+
+
+6.队列化的事件监听器
+如果你对监听器要实现耗时任务比如发邮件或者进行 HTTP 请求，那把它放到队列中处理是有好处的。在使用队列化监听器之前，一定要在服务器或者本地开发环境中 配置队列 并且开启一个队列监听器。
+
+要指定一个监听器应该队列化的话，增加 ShouldQueue 接口到你的监听器类就好了。由 event:generate Artisan 命令生成的侦听器已经将此接口导入到命名空间了，因此可以像这样来立即使用它：
+
+<?php
+
+namespace App\Listeners;
+
+use App\Events\OrderShipped;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class SendShipmentNotification implements ShouldQueue
+{
+    //
+}
+就这样！现在，当这个监听器被调用时，事件分发器会使用 Laravel 的 队列系统 自动将它进行队列化。如果监听器通过队列运行而没有抛出任何异常，则已执行完的任务将会自动从队列中被删除。
