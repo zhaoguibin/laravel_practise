@@ -7,6 +7,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Redis;
+use App\Events\OrderShipped;
+
 
 
 class SendReminderEmail implements ShouldQueue
@@ -34,6 +36,10 @@ class SendReminderEmail implements ShouldQueue
     public function handle()
     {
         //
-        Redis::hset('queue.test', $this->key, $this->value);
+//        Redis::hset('queue.test', $this->key, $this->value);
+
+//定时发送邮件
+        event(new OrderShipped('4444'));
+
     }
 }

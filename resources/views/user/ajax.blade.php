@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <input type="text" id="user_ids" name="user_id">
+    {{Auth::user()['name']}}
     <input type="button" id="button" name="434343" value="button">
     <script>
         $(function(){

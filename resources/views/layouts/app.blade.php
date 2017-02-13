@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="/css/app.css" rel="stylesheet">
+    <link href="/css/slide-unlock.css" rel="stylesheet">
 
     <!-- Scripts -->
     <script>
@@ -85,5 +86,6 @@
 
     <!-- Scripts -->
     <script src="/js/app.js"></script>
+    <script src="/js/jquery.slideunlock.js"></script>
 </body>
 </html>

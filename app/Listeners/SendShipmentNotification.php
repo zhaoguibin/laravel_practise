@@ -30,10 +30,10 @@ class SendShipmentNotification implements ShouldQueue
     public function handle(OrderShipped $event)
     {
         // 使用 $event->order 来访问 order ...
-        $aa = $event->emails;
-
-
-        $ccc = $aa[0]->name;
+//        $aa = $event->emails;
+//
+//
+//        $ccc = $aa[0]->name;
 
         $name = 'FFF';
         $flag = Mail::send('emails.test',['name'=>$name],function($message){

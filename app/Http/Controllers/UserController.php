@@ -307,7 +307,7 @@ class UserController extends Controller
                 $emails =  $user->getEmail($user_id);
 
 //              事件
-                event(new OrderShipped($emails));
+//                event(new OrderShipped($emails));
                 //通知
 //                $user->notify(new InvoicePaid($emails));
                 //队列
@@ -316,8 +316,21 @@ class UserController extends Controller
                 //延迟 分钟
 //                $job = (new SendReminderEmail('key_'.str_random(4), str_random(10)))
 //                    ->delay(Carbon::now()->addMinutes(1));
-
+//
 //                $queueId = $this->dispatch($job);
+
+                //延迟发送邮件
+//                $job = (new SendReminderEmail('key_'.str_random(4), str_random(10)))
+//                    ->delay(Carbon::now()->addMinutes(1));
+//
+//                $queueId = $this->dispatch($job);
+
+
+
+
+
+
+
 //                $queueId = $this->dispatch((new SendReminderEmail('key_'.str_random(4), str_random(10)))
 //                    ->delay(Carbon::now()->addMinutes(5)
 //                ));
