@@ -61,8 +61,19 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="password-confirm" class="col-md-4 control-label"></label>
+
+                            <div class="col-md-6">
+                                <div id="slider">
+                                    <div id="slider_bg"></div>
+                                    <span id="label">>></span> <span id="labelTip">拖动滑块验证</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" id="register_button" class="btn" disabled>
                                     Register
                                 </button>
                             </div>
@@ -73,4 +84,15 @@
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        var slider = new SliderUnlock("#slider",{
+            successLabelTip : "验证成功"
+        },function(){
+            $('#register_button').attr("disabled",false);
+            $("#register_button").addClass("btn-primary");
+        });
+        slider.init();
+    });
+</script>
 @endsection
