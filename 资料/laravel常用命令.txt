@@ -680,3 +680,10 @@ class SendShipmentNotification implements ShouldQueue
     //
 }
 就这样！现在，当这个监听器被调用时，事件分发器会使用 Laravel 的 队列系统 自动将它进行队列化。如果监听器通过队列运行而没有抛出任何异常，则已执行完的任务将会自动从队列中被删除。
+
+===========================================================================================================================================
+//验证码
+https://laravel-china.org/topics/2895
+ps：如果不能显示，清除缓存试试
+php artisan cache:clear
+php artisan config:clear
