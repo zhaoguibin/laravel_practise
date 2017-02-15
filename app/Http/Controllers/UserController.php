@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Auth;
+use Auth;
 use App\User;
 use App\File;
 use App\Http\Requests;
@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        echo $token = UUID::generate();
+//        echo $token = UUID::generate();
         $name = '';
         $echo = array(
             'name'=>'',
@@ -297,6 +297,15 @@ class UserController extends Controller
     //ajax提交测试
     public function ajax(Request $request)
     {
+//        $bool = $request->session()->get('_token');
+
+//        echo $bool;
+
+//        $data = $request->session()->all();
+//        $data = $user = Auth::user();
+//        var_dump($data);
+//        exit;
+
 
 //        $method = $request->method();
         if($request->isMethod('post')){

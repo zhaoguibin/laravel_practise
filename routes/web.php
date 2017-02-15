@@ -96,6 +96,15 @@ Route::any('captcha-test', function()
 //Route::get('/captcha/test','CaptchaController@index');
 //Route::get('/captcha/mews','CaptchaController@mews');
 
-Route::get('/cap','CaptchaController@index');
+Route::group(['middleware' => ['auth']], function () {
+
+});
+
+Route::group(['middleware' => ['is_admin']], function(){
+    Route::get('/cap','CaptchaController@index');
+});
+
+
+
 Route::post('/cpt','CaptchaController@getInfo');
 

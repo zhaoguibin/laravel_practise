@@ -48,4 +48,10 @@ class User extends Authenticatable
             ->get();
         return $users->toArray();
     }
+
+    public function IsAdmin($user_id){
+        $user_id = DB::table('users')->where('id', "$user_id")->value('is_admin');
+
+        return $user_id;
+    }
 }

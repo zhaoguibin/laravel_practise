@@ -24,7 +24,7 @@ UUID::generate(1,'00:11:22:33:44:55')
 ok
 ======================================================================================================================================>100%
 生成控制器（controller）
-php artisan make:controller PhotoController --resource
+php artisan make:controller PhotoController --resource //--resource 会生成增删改查的方法，没有就不会生成
 
 安装
 

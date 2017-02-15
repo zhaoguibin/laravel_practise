@@ -13,7 +13,13 @@ class CaptchaController extends Controller {
     /**
      * 测试页面
      */
+    public function __construct()
+    {
+//        $this->middleware('auth');
+    }
+
     public function index() {
+
 //        dd(11);
         // $mews = Captcha::src('inverse');, compact('mews')
         return view('captcha.index');
