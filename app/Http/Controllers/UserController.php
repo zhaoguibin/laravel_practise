@@ -318,7 +318,7 @@ class UserController extends Controller
 //              事件
 //                event(new OrderShipped($emails));
                 //通知
-//                $user->notify(new InvoicePaid($emails));
+                $user->notify(new InvoicePaid($emails));
                 //队列
 //                dispatch(new SendReminderEmail($emails));
 //                Redis::set(time(),time());

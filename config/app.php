@@ -165,6 +165,8 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         //验证码
         Mews\Captcha\CaptchaServiceProvider::class,
+        //excel
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -232,6 +234,8 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         //验证码
         'Captcha'=> Mews\Captcha\Facades\Captcha::class,
+        //excel
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

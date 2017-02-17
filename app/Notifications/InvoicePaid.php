@@ -27,9 +27,14 @@ class InvoicePaid extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
+//    public function via($notifiable)
+//    {
+//        return ['mail'];
+//    }
+
     public function via($notifiable)
     {
-        return ['mail'];
+        return $notifiable->prefers_sms ? ['nexmo'] : ['mail', 'database'];
     }
 
     /**
@@ -46,16 +51,23 @@ class InvoicePaid extends Notification
                     ->line('Thank you for using our application!');
     }
 
+    public function routeNotificationForMail()
+    {
+        return $this->email_address;
+    }
+
     /**
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
-            //
+            'notifiable_id'=>1,
+            'invoice_id' => 1,
+            'amount' => 2,
         ];
     }
 }
