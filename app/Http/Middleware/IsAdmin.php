@@ -22,7 +22,7 @@ class IsAdmin
         if($is_admin != 1){
             //触发错误
 //            abort(503);
-//            return redirect('/home');
+            return redirect('/home');
         }
 
         return $next($request);
