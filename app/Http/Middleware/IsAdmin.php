@@ -17,17 +17,13 @@ class IsAdmin
      */
     public function handle($request, Closure $next)
     {
-
         $user = new User;
         $is_admin = $user->IsAdmin(Auth::id());
-
         if($is_admin != 1){
-            echo '没有权限';
-            die();
+            //触发错误
+//            abort(503);
+//            return redirect('/home');
         }
-
-
-
 
         return $next($request);
     }

@@ -366,4 +366,17 @@ class UserController extends Controller
 
 
 
+    public function mysql(){
+        $users = DB::table('users')
+            ->leftJoin('emails', 'users.id', '=', 'emails.user_id')
+            ->select('users.*', 'emails.content', 'emails.title')
+            ->whereIn("users.id",[1, 2, 3])
+            ->get();
+
+        dd($users);
+//
+//        return $users->toArray();
+
+    }
+
 }

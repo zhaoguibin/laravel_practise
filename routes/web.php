@@ -24,10 +24,11 @@ Route::get('/home', 'HomeController@index');
 Route::get('/png', function () {
     ob_clean();
     ob_start();
+    $data = iconv("utf-8","GBK//IGNORE",'dsfds');
     $im = @imagecreate(200, 50) or die("创建图像资源失败");
     imagecolorallocate($im, 255, 255, 255);
     $text_color = imagecolorallocate($im, 0, 0, 255);
-    imagestring($im, 5, 0, 0, "Hello world!", $text_color);
+    imagestring($im, 5, 0, 0, $data, $text_color);
     imagepng($im);
     imagedestroy($im);
     $content = ob_get_clean();
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 Route::get('/getcode','UserController@getCode');
+Route::get('/mysql','UserController@mysql');
 Route::get('/curltest','UserController@curlTest');
 Route::post('/without_csrf','UserController@without_csrf');
 Route::get('/mail/send','MailController@send');
