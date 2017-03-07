@@ -687,3 +687,18 @@ https://laravel-china.org/topics/2895
 ps：如果不能显示，清除缓存试试
 php artisan cache:clear
 php artisan config:clear
+
+===========================================================================================================================================
+错误信息
+`Warning: require(/http/www.mywakavLee.cn/bootstrap/../vendor/autoload.php): failed to open stream: No such file or directory in /http/www.mywakavLee.cn/bootstrap/autoload.php on line 17
+
+Fatal error: require(): Failed opening required ‘/http/www.mywakavLee.cn/bootstrap/../vendor/autoload.php’ (include_path=’.:/usr/local/lib/php’) in /http/www.mywakavLee.cn/bootstrap/autoload.php on line 17`
+
+错误原因
+网站根目录下缺少vendor这个存放laraver依赖包的目录
+
+
+解决方法
+使用composer install进行安装（没有安装过的情况下，以前安装过的话使用：composer update）
+
+如果项目安装过，可以直接使用composer update命令
