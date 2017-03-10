@@ -702,3 +702,6 @@ Fatal error: require(): Failed opening required ‘/http/www.mywakavLee.cn/boots
 使用composer install进行安装（没有安装过的情况下，以前安装过的话使用：composer update）
 
 如果项目安装过，可以直接使用composer update命令
+
+
+php artisan key:generate
